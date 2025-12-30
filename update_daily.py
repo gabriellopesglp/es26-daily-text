@@ -1,6 +1,8 @@
 import json
 import datetime
 import os
+from email.utils import format_datetime
+from datetime import timezone, timedelta
 
 # Caminhos dos arquivos
 SOURCE_FILE = 'daily_text.json'
@@ -44,6 +46,29 @@ def update_daily_file():
         # Opcional: Criar um JSON vazio ou com erro para não quebrar o app
         with open(TARGET_FILE, 'w', encoding='utf-8') as f:
             json.dump({"error": "Texto não encontrado", "date": key}, f)
+        daily_content = {"title": "Texto não encontrado", "content": "Sem conteúdo para a data", "full_date": f"2026-{month}-{day}"}
+
+    pub = format_datetime(br_time.replace(tzinfo=timezone(timedelta(hours=-3))))
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Texto do Dia</title>
+    <link>hoje.json</link>
+    <description>Texto bíblico diário</description>
+    <language>pt-BR</language>
+    <lastBuildDate>{pub}</lastBuildDate>
+    <item>
+      <title><![CDATA[{daily_content['title']}]]></title>
+      <description><![CDATA[{daily_content['content']}]]></description>
+      <link>hoje.json</link>
+      <guid isPermaLink="false">{daily_content['full_date']}</guid>
+      <pubDate>{pub}</pubDate>
+    </item>
+  </channel>
+</rss>
+'''
+    with open('rss.xml', 'w', encoding='utf-8') as f:
+        f.write(xml)
 
 if __name__ == "__main__":
     update_daily_file()
