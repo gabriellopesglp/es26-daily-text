@@ -297,11 +297,17 @@ def extract_all_days(base_path):
         # Encontrar todas as datas e suas posições
         matches = list(re.finditer(date_pattern, content, re.IGNORECASE))
         
+        # Descobrir o ano pelo nome do arquivo (ex: es26_T_12.rtf -> 2026, es25_T_12.rtf -> 2025)
+        year_match = re.search(r'es(\d{2})_T_\d{2}\.rtf', filename)
+        year = 2026
+        if year_match:
+            year = 2000 + int(year_match.group(1))
+        
         for i, match in enumerate(matches):
             day = int(match.group(2))
             month_name = match.group(3).lower()
             month = MONTHS.get(month_name, 1)
-            date_str = f"2026-{month:02d}-{day:02d}"
+            date_str = f"{year}-{month:02d}-{day:02d}"
             
             start_pos = match.end()
             end_pos = matches[i+1].start() if i + 1 < len(matches) else len(content)
@@ -359,14 +365,17 @@ if __name__ == "__main__":
     json_output = {}
     for item in data:
         # Extrair MM-DD da data YYYY-MM-DD
+        year = item['date'][:4]
         key = item['date'][5:] # 01-01
-        json_output[key] = {
+        if year not in json_output:
+            json_output[year] = {}
+        json_output[year][key] = {
             "title": item['title'],
             "content": item['content'],
             "full_date": item['date'] # opcional, mas útil
         }
         
-    output_path = "/Users/GABERA/projetos/es26/daily_text.json"
+    output_path = "/Users/GABERA/projetos/es26/daily_text_by_year.json"
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(json_output, f, ensure_ascii=False, indent=2)
         

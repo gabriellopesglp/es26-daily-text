@@ -5,7 +5,7 @@ from email.utils import format_datetime
 from datetime import timezone, timedelta
 
 # Caminhos dos arquivos
-SOURCE_FILE = 'daily_text.json'
+SOURCE_FILE = 'daily_text_by_year.json'
 TARGET_FILE = 'hoje.json'
 
 def update_daily_file():
@@ -33,7 +33,8 @@ def update_daily_file():
     print(f"Buscando texto para a data: {key} (Brasília)")
 
     # Buscar o texto do dia
-    daily_content = all_texts.get(key)
+    year = br_time.year
+    daily_content = (all_texts.get(str(year)) or {}).get(key)
 
     if daily_content:
         # Salvar no arquivo alvo
