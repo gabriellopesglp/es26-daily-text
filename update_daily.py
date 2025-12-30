@@ -58,7 +58,7 @@ def update_daily_file():
     <language>pt-BR</language>
     <lastBuildDate>{pub}</lastBuildDate>
     <item>
-      <title><![CDATA[{daily_content['title']}]]></title>
+      <title><![CDATA[]]></title>
       <description><![CDATA[{daily_content['content']} — {daily_content['title']}]]></description>
       <link>hoje.json</link>
       <guid isPermaLink="false">{daily_content['full_date']}</guid>
