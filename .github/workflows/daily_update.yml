@@ -1,0 +1,31 @@
+name: Atualizar Texto Diário
+
+on:
+  schedule:
+    # Roda todos os dias às 03:00 UTC (00:00 Horário de Brasília)
+    - cron: "0 3 * * *"
+  workflow_dispatch: # Permite rodar manualmente na aba Actions do GitHub
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Gerar JSON do dia
+        run: python update_daily.py
+
+      - name: Commit e Push das alterações
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add hoje.json
+          # Só faz commit se houver mudanças
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Atualizar texto do dia $(date +'%Y-%m-%d')" && git push)

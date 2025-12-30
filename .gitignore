@@ -1,0 +1,17 @@
+# Ignorar arquivos de dados brutos
+arquivos/
+*.rtf
+
+# Ignorar arquivos de sistema e IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Ignorar arquivos Python compilados
+__pycache__/
+*.pyc
+
+# Ignorar ambiente virtual (se houver)
+venv/
+env/
+.venv/
