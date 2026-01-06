@@ -6,6 +6,7 @@ from datetime import timezone, timedelta
 
 # Caminhos dos arquivos
 SOURCE_FILE = 'daily_text_by_year.json'
+SOURCE_FILE_ES = 'daily_text_by_year_es.json'
 TARGET_FILE = 'hoje.json'
 
 def update_daily_file():
@@ -17,6 +18,10 @@ def update_daily_file():
     # Ler todos os textos
     with open(SOURCE_FILE, 'r', encoding='utf-8') as f:
         all_texts = json.load(f)
+    all_texts_es = {}
+    if os.path.exists(SOURCE_FILE_ES):
+        with open(SOURCE_FILE_ES, 'r', encoding='utf-8') as f:
+            all_texts_es = json.load(f)
 
     # Obter data de hoje (UTC ou ajustar fuso se necessário)
     # GitHub Actions roda em UTC. Se seu público é BR, talvez queira UTC-3
@@ -35,6 +40,7 @@ def update_daily_file():
     # Buscar o texto do dia
     year = br_time.year
     daily_content = (all_texts.get(str(year)) or {}).get(key)
+    daily_content_es = (all_texts_es.get(str(year)) or {}).get(key)
 
     if daily_content:
         # Salvar no arquivo alvo
@@ -70,6 +76,37 @@ def update_daily_file():
 '''
     with open('rss.xml', 'w', encoding='utf-8') as f:
         f.write(xml)
+
+    # Espanhol
+    TARGET_FILE_ES = 'hoje_es.json'
+    if daily_content_es:
+        with open(TARGET_FILE_ES, 'w', encoding='utf-8') as f:
+            json.dump(daily_content_es, f, ensure_ascii=False, indent=2)
+    else:
+        with open(TARGET_FILE_ES, 'w', encoding='utf-8') as f:
+            json.dump({"error": "Texto no encontrado", "date": key}, f)
+        daily_content_es = {"title": "", "content": "Sin contenido para la fecha", "full_date": f"{year}-{month}-{day}"}
+
+    xml_es = f'''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Texto del Día</title>
+    <link>hoje_es.json</link>
+    <description>Texto bíblico diario (es)</description>
+    <language>es-ES</language>
+    <lastBuildDate>{pub}</lastBuildDate>
+    <item>
+      <title><![CDATA[\u200B]]></title>
+      <description><![CDATA[{daily_content_es['content']} — {daily_content_es['title']}]]></description>
+      <link>hoje_es.json</link>
+      <guid isPermaLink="false">{daily_content_es['full_date']}</guid>
+      <pubDate>{pub}</pubDate>
+    </item>
+  </channel>
+</rss>
+'''
+    with open('rss_es.xml', 'w', encoding='utf-8') as f:
+        f.write(xml_es)
 
 if __name__ == "__main__":
     update_daily_file()

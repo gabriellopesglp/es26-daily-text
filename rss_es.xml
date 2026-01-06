@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>Texto do Dia</title>
-    <link>hoje.json</link>
-    <description>Texto bíblico diário</description>
-    <language>pt-BR</language>
+    <title>Texto del Día</title>
+    <link>hoje_es.json</link>
+    <description>Texto bíblico diario (es)</description>
+    <language>es-ES</language>
     <lastBuildDate>Tue, 06 Jan 2026 13:55:16 -0300</lastBuildDate>
     <item>
       <title><![CDATA[​]]></title>
-      <description><![CDATA[Ele cura os que têm coração quebrantado; trata das suas feridas. — Sal. 147:3]]></description>
-      <link>hoje.json</link>
+      <description><![CDATA[Sana a los que tienen el corazón destrozado y venda sus heridas — Sal. 147:3]]></description>
+      <link>hoje_es.json</link>
       <guid isPermaLink="false">2026-01-06</guid>
       <pubDate>Tue, 06 Jan 2026 13:55:16 -0300</pubDate>
     </item>
